@@ -2,7 +2,6 @@ package usace.wm.schedule;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
@@ -14,7 +13,6 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +34,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.JTextComponent;
 public class ScheduleReschedule extends JDialog {
@@ -45,7 +42,6 @@ public class ScheduleReschedule extends JDialog {
 	private static Vector<String> sites = new Vector<String>();
 	private HashMap<String, Vector<DlyData>> dlyDataFile = new HashMap<String, Vector<DlyData>>();
 	HashMap<String, List<Integer>> capabilities = new HashMap<String, List<Integer>>();
-	// private static ScheduleFileData schedFileData = null;
 	private String startDay = null;
 	private String schfileEndDate = null;
 	private String energyEndDate = null;
@@ -88,7 +84,6 @@ public class ScheduleReschedule extends JDialog {
 	int columnSeven = 7;
 	int columnEight = 8;
 	int columnNine = 9;
-//	int columnTen = 10;
 
 	public ScheduleReschedule(Vector<String> sites, HashMap<String, Vector<DlyData>> dlyDataFile, ScheduleFileData sfd,
 			String schfileEndDay, String energyEndDate, String schfileStartDate, String[] capToleranceInfo) {
@@ -99,6 +94,7 @@ public class ScheduleReschedule extends JDialog {
 		setEnergyEndDate(energyEndDate);
 		setSchfileStartDate(schfileStartDate);
 		setCapToleranceInfo(capToleranceInfo);
+		// System.out.println("ActGenPower0: " + Util.getSchedFileData().getDlyDataMap().get("250419_2").getActGenPower());
 
 		setStartDay(Util.getCalendarYYMMDD(Util.subtractCalendarDay(Util.getCalendarYYMMDD(getSchfileEndDate()), 8)));
 		try {
@@ -137,7 +133,6 @@ public class ScheduleReschedule extends JDialog {
 				Component c = super.prepareEditor(editor, row, column);
 				if ((c instanceof JTextComponent)) {
 					String val = (String) schedReschedTable.getValueAt(row, column);
-
 					((JTextComponent) c).requestFocus();
 					((JTextComponent) c).selectAll();
 				}
@@ -196,8 +191,7 @@ public class ScheduleReschedule extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				setUpdateFlag(true);
 				computeButton_actionPerformed(e);
-
-				computeButton_actionPerformed(e);
+				// computeButton_actionPerformed(e); //TODO not sure if this is needed
 			}
 		});
 		clearButton.setText("Clear");
@@ -288,7 +282,6 @@ public class ScheduleReschedule extends JDialog {
 			if (obj == null) {
 				setValueAt("", row, col);
 			}
-			// if (((row < 21) || (row >= 26))) {
 			if (row == 25) {
 				return true;
 			} else if (((row < 21) || (row >= 24))) {
@@ -298,14 +291,6 @@ public class ScheduleReschedule extends JDialog {
 			} else if (((col == 4) || (col == 5)) && (row == 22)) {
 				return false;
 			}
-			// if((col == 9 || col == 10) && row == 21){
-			// return true;
-			// }
-			// if ((col < 1) || (((col != 4) && (col != 5)) || ((row == 22) ||
-			// ((col >= 8) && (row > 22)) || ((col > 10) && (row <= 22)) ||
-			// ((col == 1) && (row > 22))))) {
-			// return false;
-			// }
 
 			return true;
 		}
@@ -324,7 +309,6 @@ public class ScheduleReschedule extends JDialog {
 				}
 			}
 		};
-		TableCellListener tcl = new TableCellListener(schedReschedTable, action);
 	}
 
 	private void loadTable() {
@@ -495,8 +479,6 @@ public class ScheduleReschedule extends JDialog {
 
 		table.setValueAt("BB El", getReschedTableHeaderRow(), getColumnEight());
 		table.setValueAt("GAPT", getReschedTableHeaderRow(), getColumnNine());
-//		table.setValueAt("SPC", getReschedTableHeaderRow(), getColumnTen()); Removed 4/22/2021 SPC
-
 		table.setValueAt("GE Total", getReschedTableHeaderRow() + 1, getColumnOne());
 
 		Vector<String> sites = getSites();
@@ -507,8 +489,6 @@ public class ScheduleReschedule extends JDialog {
 		}
 		table.setValueAt("Chng", getDamnSitesRow(), getColumnEight());
 		table.setValueAt("24ID", getDamnSitesRow(), getColumnNine());
-//		table.setValueAt("Q", getDamnSitesRow(), getColumnTen()); Removed 4/22/2021 SPC
-
 		table.setValueAt("Resch OP", getReschOPRow(), getColumnZero());
 		table.setValueAt("GE-OP's", getGeOPsRow(), getColumnZero());
 		table.setValueAt("Coeff.", getCoeffRow(), getColumnZero());
@@ -606,22 +586,7 @@ public class ScheduleReschedule extends JDialog {
 					table.setValueAt("", getGeOPsRow(), getColumnNine());
 				}
 			}
-//			if (echoFlag) {  Removed SPC 4/22/2021
-//				HashMap<String, String> spc = sch.getSpcMap();
-//				if (spc.containsKey(Util.getDataKey(date))) {
-//					String data = (String) spc.get(Util.getDataKey(date));
-//					if (data.length() > 0) {
-//						if (Double.parseDouble(data) > 0.0D) {
-//							table.setValueAt(getFormatThreeDecimal().format(Double.parseDouble(data)), getGeOPsRow(),
-//									getColumnTen());
-//						}
-//					} else {
-//						table.setValueAt("", getGeOPsRow(), getColumnTen());
-//					}
-//				}
-//				sch.setSpcMap(spc);
-//				Util.setSchedFileData(sch);
-//			}
+
 			HashMap<String, String[]> coefficients = sch.getCoefficientMap();
 			if (coefficients.containsKey(Util.getDataKey(date))) {
 				String[] data = (String[]) coefficients.get(Util.getDataKey(date));
@@ -640,13 +605,9 @@ public class ScheduleReschedule extends JDialog {
 			}
 			//TODO changes here for the new time-series for each project
 			LinkedHashMap<String, LinkedHashMap<String, Vector<OutagesTable>>> oMap = WaterManagementUI.getOutagesMap();
-			// HashMap<String, String[]> outages = sch.getOutageMap(); //old
-			// way, text file
+
 			if (oMap.containsKey(Util.getDataKey(date))) {
-				// if (outages.containsKey(Util.getDataKey(date))) { //old way, text file
 				String[] data = WaterManagementUI.formatOutagesDayMap(oMap, Util.getDataKey(date));
-				// String[] data = (String[])
-				// outages.get(Util.getDataKey(date)); //old way, text file
 				for (int x = 0; x < data.length; x++) {
 					if (data[x].length() > 0) {
 						if (Double.parseDouble(data[x]) > 0.0D) {
@@ -735,27 +696,6 @@ public class ScheduleReschedule extends JDialog {
 		sch.setTotReschedCalEnrgyMap(reschedOP);
 		Util.setSchedFileData(sch);
 	}
-
-//	/**  Removed 4/22/2021 SPC
-//	 * 
-//	 */
-//	private void updateSPCInformation() {
-//		ScheduleFileData sch = Util.getSchedFileData();
-//		HashMap<String, String> spcMap = sch.getSpcMap();
-//
-//		String data = "0.0";
-//		if (spcMap.containsKey(getStartKey())) {
-//			Object d = getSchedReschedTable().getValueAt(getGeOPsRow(), getColumnTen());
-//			if ((d != null) && (d.toString().trim().length() > 0)) {
-//				data = d.toString();
-//			}
-//		} else {
-//			data = new String(getSchedReschedTable().getValueAt(getGeOPsRow(), getColumnTen()).toString());
-//		}
-//		spcMap.put(getStartKey(), data);
-//		sch.setSpcMap(spcMap);
-//		Util.setSchedFileData(sch);
-//	}
 
 	private void update24IDInformation() {
 		ScheduleFileData sch = Util.getSchedFileData();
@@ -856,37 +796,6 @@ public class ScheduleReschedule extends JDialog {
 		Util.setSchedFileData(sch);
 	}
 
-	// private void updateOutageInformation() {
-	// ScheduleFileData sch = getSchedFileData();
-	// HashMap<String, String[]> outages = sch.getOutageMap();
-	//
-	// String[] data = (String[]) null;
-	// if (outages.containsKey(getStartKey())) {
-	// data = (String[]) outages.get(getStartKey());
-	// for (int x = 0; x < data.length; x++) {
-	// Object d = getSchedReschedTable().getValueAt(getOutagesRow(),
-	// getColumnTwo() + x);
-	// if (d != null) {
-	// data[x] = d.toString();
-	// if (d.toString().trim().length() <= 0) {
-	// data[x] = "0";
-	// }
-	// }
-	// }
-	// } else {
-	// data = new String[6];
-	// int record = 0;
-	// while (record < 6) {
-	// data[record] = getSchedReschedTable().getValueAt(getOutagesRow(),
-	// getColumnTwo() + record).toString();
-	// record++;
-	// }
-	// }
-	// outages.put(getStartKey(), data);
-	// sch.setOutageMap(outages);
-	// setSchedFileData(sch);
-	// }
-
 	private void updateODInformation() {
 		ScheduleFileData sch = Util.getSchedFileData();
 		HashMap<String, DlyData> dly = sch.getDlyDataMap();
@@ -948,7 +857,6 @@ public class ScheduleReschedule extends JDialog {
 		if (getSchedReschedTable().getCellEditor() != null) {
 			getSchedReschedTable().getCellEditor().stopCellEditing();
 		}
-//		updateSpencerData(getCurrentRescheduleDate()); Removed 4/22/2021 SPC
 		updateGapt24IdData(getCurrentRescheduleDate());
 		clearScheduleTableInfo();
 		if ((Util.getCalendarYYMMDD(getSchfileEndDate()).after(getCurrentRescheduleDate()))
@@ -968,7 +876,6 @@ public class ScheduleReschedule extends JDialog {
 		if (getSchedReschedTable().getCellEditor() != null) {
 			getSchedReschedTable().getCellEditor().stopCellEditing();
 		}
-//		updateSpencerData(getCurrentRescheduleDate()); Removed 4/22/2021 SPC
 		updateGapt24IdData(getCurrentRescheduleDate());
 		if (getScheduleDate(0).after(Util.getCalendarYYMMDD(getSchfileStartDate()))) {
 			Calendar cal = getScheduleDate(-1);
@@ -1046,24 +953,15 @@ public class ScheduleReschedule extends JDialog {
 		HashMap<String, String> totalReschedEnergy = sch.getTotReschedCalEnrgyMap();
 		HashMap<String, String> reschedElevBB = sch.getRescheduleBBElevMap();
 		HashMap<String, String> elevBB = sch.getBbElevMap();
-//		HashMap<String, String> spencer = sch.getSpcMap();
 		HashMap<String, String> idMap = sch.getId24Map();
+
+		// System.out.println("calculateEnergy1: " + sch.getDlyDataMap().get("250419_2").getActGenPower());
+		// System.out.println("calculateEnergy2: " + dly.get("250419_2").getActGenPower());
 
 		JTable table = getSchedReschedTable();
 		String[] coefficient = new String[6];
 		String[] outage = new String[6];
 		
-// Removed 4/22/2021 SPC
-//		String spcData = (String) table.getValueAt(getReschOPRow(), getColumnTen());
-//		double spc = 0.0D;
-//		if (spcData != null) {
-//			spcData = table.getValueAt(getReschOPRow(), getColumnTen()).toString();
-//			if (spcData.trim().length() > 0) {
-//				spc = Double.parseDouble(spcData);
-//			}
-//		}
-//		spencer.put(getStartKey(), Double.toString(spc));
-
 		String idData = (String) table.getValueAt(getReschOPRow(), getColumnNine());
 		double id = 0.0D;
 		if (idData != null) {
@@ -1163,12 +1061,30 @@ public class ScheduleReschedule extends JDialog {
 			} else {
 				data.setOD("0");
 			}
-			double resched = coef > 0.5D ? 50 * (int) (geop * coef / 50.0D + 0.5D) : 0.0D;
+			double resched = -99.99;
+			if(col == 5){
+				resched = coef > 0.5D ? 60 * (int) (geop * coef / 60.0D + 0.5D) : 0.0D;
+			} else {
+				resched = coef > 0.5D ? 50 * (int) (geop * coef / 50.0D + 0.5D) : 0.0D;
+			}
+			
+//			if( key.startsWith("250513")){
+//				System.out.println("DlyDataMap ActGenPower:" + key +": " + sch.getDlyDataMap().get(key).getActGenPower());
+//				System.out.println("ActGenPower:" + key +":: " + data.getActGenPower());
+//			}
+						
 			data.setActGenPower(Double.toString(resched));
 			dly.put(key, data);
-		}
+			
+//			if( key.startsWith("250513_2")){
+//				System.out.println("setActGenPower2: " + dly.get("250513_2").getActGenPower());
+//			}
+//			if( key.startsWith("250513_3")){
+//				System.out.println("setActGenPower3: " + dly.get("250513_3").getActGenPower());
+//			}
+
+		}//for
 		sch.setId24Map(idMap);
-//		sch.setSpcMap(spencer);
 		sch.setBbElevMap(elevBB);
 		sch.setRescheduleBBElevMap(reschedElevBB);
 		outages.put(getStartKey(), outage);
@@ -1177,6 +1093,10 @@ public class ScheduleReschedule extends JDialog {
 		sch.setTotCalEnrgyMap(totalEnergy);
 		sch.setTotReschedCalEnrgyMap(totalReschedEnergy);
 		Util.setSchedFileData(sch);
+
+//		System.out.println("getActGenPower1: " + sch.getDlyDataMap().get("250513_2").getActGenPower());
+//		System.out.println("getActGenPower12: " + sch.getDlyDataMap().get("250513_3").getActGenPower());
+
 	}
 
 	/**
@@ -1219,9 +1139,8 @@ public class ScheduleReschedule extends JDialog {
 		// The following checks scheduled OP to see if it is too large
 		ScheduleFileData sch = Util.getSchedFileData();
 		HashMap<String, DlyData> dlyDataMap = sch.getDlyDataMap();
+		// System.out.println("ActGenPower3: " + sch.getDlyDataMap().get("250419_2").getActGenPower());
 		String dayKeyNow = Util.getCalendarYYMMDD(day);
-
-		DlyData xysa = dlyDataMap.get(Util.getCalendarYYMMDD(dayKeyNow));
 
 		// Check the reschedule data values
 		// FTPK reschedule check
@@ -1593,8 +1512,8 @@ public class ScheduleReschedule extends JDialog {
 						// data[rset][36+d4]=data[rset][36+d4] - fb;
 						// bend ge if oahe off
 						dlyDataMap.get(dayKeyNow + "_3").setActGenPower(
-								Integer.toString(50 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
-										* Double.valueOf(coefficient[3]).doubleValue() / 50) + .5))));
+								Integer.toString(60 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
+										* Double.valueOf(coefficient[3]).doubleValue() / 60) + .5))));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*Double.valueOf(coefficient[3]).doubleValue()/50)+.5));
 					}
 				}
@@ -1612,30 +1531,30 @@ public class ScheduleReschedule extends JDialog {
 						// data[rset][36+d4]=(float)((int)((fa*2)+.5))/2;
 						// bend ge
 						dlyDataMap.get(dayKeyNow + "_3").setRescheduleEnergy(
-								Integer.toString(50 * ((int) (((dlyDataMap.get(dayKeyNow + "_3").getRescheduleOpNum()
-										* Double.valueOf(coefficient[3]).doubleValue() / 50) + .5)))));
+								Integer.toString(60 * ((int) (((dlyDataMap.get(dayKeyNow + "_3").getRescheduleOpNum()
+										* Double.valueOf(coefficient[3]).doubleValue() / 60) + .5)))));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)+.5));
+//						System.out.println("bend new getRescheduleEnergy: " + dlyDataMap.get(dayKeyNow + "_3").getRescheduleEnergy());
 					} else {
 						// 36+0=36 34+0=34
 						dlyDataMap.get(dayKeyNow + "_3").setKcfs(Float.toString((float) ((int) ((fa * 2) + .5)) / 2));
 						// data[rset][36+d4]=(float)((int)((fa*2)+.5))/2;
 						// bend ge
+						
 						dlyDataMap.get(dayKeyNow + "_3").setActGenPower(
-								Integer.toString(50 * ((int) (((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
-										* Double.valueOf(coefficient[3]).doubleValue() / 50) + .5)))));
+								Integer.toString(60 * ((int) (((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
+										* Double.valueOf(coefficient[3]).doubleValue() / 60) + .5)))));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)+.5));
-						// /* bend ge */
+//						System.out.println("bend kcfsNum: "+(dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()));
 					}
-				} else {
-					// 36+18=54 34+18=52
 					if (allPlantRescheduled) {
 						// 36+18=54 34+18=52
 						dlyDataMap.get(dayKeyNow + "_3").setKcfs(Float.toString((float) ((int) ((fa * 2) - .5)) / 2));
 						// data[rset][36+d4]=(float)((int)((fa*2)-.5))/2;
-						// bend ge
+						// bend ge  Changed to 60
 						dlyDataMap.get(dayKeyNow + "_3").setRescheduleEnergy(
-								Integer.toString(50 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getRescheduleOpNum()
-										* Double.valueOf(coefficient[3]).doubleValue() / 50) - .5))));
+								Integer.toString(60 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getRescheduleOpNum()
+										* Double.valueOf(coefficient[3]).doubleValue() / 60) - .5))));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)-.5));
 					} else {
 						// 36+0=36 34+0=34
@@ -1648,10 +1567,10 @@ public class ScheduleReschedule extends JDialog {
 						// ((dlyDataMap.get(dayKeyNow + "_3")
 						// .getKcfsNum() *
 						// Double.valueOf(coefficient[3]).doubleValue() / 50) -
-						// .5)));
+						// .5)));  Changed to 60
 						dlyDataMap.get(dayKeyNow + "_3").setActGenPower(
-								Integer.toString(50 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
-										* Double.valueOf(coefficient[3]).doubleValue() / 50) - .5))));
+								Integer.toString(60 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
+										* Double.valueOf(coefficient[3]).doubleValue() / 60) - .5))));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)-.5));
 						// /* bend ge */
 					}
@@ -1660,13 +1579,14 @@ public class ScheduleReschedule extends JDialog {
 					// Oahe discharge
 					// 33+18=51, 34+18=52
 					dlyDataMap.get(dayKeyNow + "_2")
-							.setRescheduleOP(Float.toString((float) ((int) (((fa + fb) * 2) + .5)) / 2));
+							.setRescheduleOP(Float.toString((float) ((int) (((fa + fb) * 2) + .5)) / 2));	
 					// data[rset][33+d3]=(float)((int)(((fa + fb)*2)+.5))/2; /*
 					// Oahe discharge */
 					// oahe ge
 					dlyDataMap.get(dayKeyNow + "_2").setRescheduleEnergy(
 							Double.toString(fc - dlyDataMap.get(dayKeyNow + "_3").getRescheduleEnergyNum()));
 					// data[rset][31+d3]=fc - data[rset][34+d4]; /* oahe ge */
+//					System.out.println("oahe new getRescheduleEnergy: " + dlyDataMap.get(dayKeyNow + "_2").getRescheduleEnergy());
 				} else {
 					// Oahe discharge
 					dlyDataMap.get(dayKeyNow + "_2")
@@ -1680,9 +1600,6 @@ public class ScheduleReschedule extends JDialog {
 				}
 			}
 		}
-		// Save the updated data
-		// sch.setDlyDataMap(dlyDataMap);
-		// setSchedFileData(sch);
 
 		// Outages
 		HashMap<String, String[]> outages = sch.getOutageMap();
@@ -1724,6 +1641,7 @@ public class ScheduleReschedule extends JDialog {
 		}
 		sch.setDlyDataMap(dlyDataMap);
 		Util.setSchedFileData(sch);
+		// System.out.println("ActGenPower2: " + sch.getDlyDataMap().get("250419_2").getActGenPower());
 	}
 
 	private void warningMessage(int site) {
@@ -1857,17 +1775,6 @@ public class ScheduleReschedule extends JDialog {
 		return dlyDataFile;
 	}
 
-	// protected void setSchedFileData(ScheduleFileData sfd) {
-	// schedFileData = sfd;
-	// }
-	//
-	// protected ScheduleFileData getSchedFileData() {
-	// if (schedFileData == null) {
-	// return schedFileData = new ScheduleFileData();
-	// }
-	// return schedFileData;
-	// }
-
 	protected void setStartDay(String start) {
 		startDay = start;
 	}
@@ -1928,7 +1835,6 @@ public class ScheduleReschedule extends JDialog {
 		if (getSchedReschedTable().getCellEditor() != null) {
 			getSchedReschedTable().getCellEditor().stopCellEditing();
 		}
-//		updateSpencerData(getCurrentRescheduleDate()); Removed 4/22/2021 SPC
 		updateGapt24IdData(getCurrentRescheduleDate());
 		setVisible(false);
 	}
@@ -1993,10 +1899,6 @@ public class ScheduleReschedule extends JDialog {
 		return columnNine;
 	}
 
-//	private int getColumnTen() {
-//		return columnTen;
-//	}
-
 	private void setCapToleranceInfo(String[] cti) {
 		capToleranceInfo = cti;
 	}
@@ -2021,13 +1923,11 @@ public class ScheduleReschedule extends JDialog {
 		calculateEnergy();
 		compute(now);
 		updateODInformation();
-		// updateOutageInformation();
 		updateCoefficientInformation();
 		updateGeTotalInformation();
 		updateGEInformation();
 		updateBbElevInformation();
 		update24IDInformation();
-//		updateSPCInformation(); Removed 4/22/2021 SPC
 		updateRescheduleOPTotalInformation();
 		updateReschedOPInformation();
 		setSchedReschedTableData(getSchedReschedTable(), now, true);
@@ -2054,13 +1954,11 @@ public class ScheduleReschedule extends JDialog {
 		removeScheduleFileData(now);
 
 		updateODInformation();
-		// updateOutageInformation();
 		updateCoefficientInformation();
 		updateGeTotalInformation();
 		updateGEInformation();
 		updateBbElevInformation();
 		update24IDInformation();
-//		updateSPCInformation(); Removed 4/22/2021 SPC
 		updateRescheduleOPTotalInformation();
 		updateReschedOPInformation();
 		setSchedReschedTableData(getSchedReschedTable(), now, true);
@@ -2093,9 +1991,6 @@ public class ScheduleReschedule extends JDialog {
 			if (schedFile.getRescheduleBBElevMap().containsKey(key)) {
 				schedFile.getRescheduleBBElevMap().remove(key);
 			}
-//			if (schedFile.getSpcMap().containsKey(key)) {
-//				schedFile.getSpcMap().remove(key);
-//			}
 			if (schedFile.getId24Map().containsKey(key)) {
 				schedFile.getId24Map().remove(key);
 			}
@@ -2114,25 +2009,6 @@ public class ScheduleReschedule extends JDialog {
 			record++;
 		}
 	}
-
-//	/**   Removed 4/22/2021  SPC
-//	 * 
-//	 * @param date
-//	 */
-//	private void updateSpencerData(Calendar date) {
-//		JTable table = getSchedReschedTable();
-//		String val = (String) table.getValueAt(getGeOPsRow(), getColumnTen());
-//		String currentDay = Util.getCalendarYYMMDD(date);
-//		Calendar now = Util.getDate();
-//
-//		ScheduleFileData sch = Util.getSchedFileData();// TODO data here
-//		HashMap<String, String> spcData = sch.getSpcMap();
-//		if (((date.before(now)) || (date.equals(now))) && (val != null) && (val.length() > 0)) {
-//			spcData.put(currentDay, val);
-//		}
-//		sch.setSpcMap(spcData);
-//		Util.setSchedFileData(sch);
-//	}
 
 	/**
 	 * 
@@ -2259,67 +2135,6 @@ public class ScheduleReschedule extends JDialog {
 		setCapabilities(capabilities);
 	}
 
-	// private void updatcap()
-	// {
-	// double fa = 0.0D;
-	// double cap = -1.0D;
-	//
-	// HashMap<String, List<Integer>> capabilities = getCapabilities();
-	//
-	// ScheduleFileData sch = getSchedFileData();
-	// HashMap<String, String[]> outages = sch.getOutageMap();
-	// Set<String> keys = outages.keySet();
-	// Iterator<String> it = keys.iterator();
-	//
-	// HashMap<String, DlyData> dlyDataMap = sch.getDlyDataMap();
-	//
-	// String dayKeyNow = null;
-	// int i;
-	// for (; it.hasNext(); i < 6)
-	// {
-	// dayKeyNow = (String)it.next();
-	// i = 0; continue;
-	// DlyData dlyData = (DlyData)dlyDataMap.get(dayKeyNow + "_" + i);
-	//
-	// fa = 0.0D;
-	// if (i == 3)
-	// {
-	// dlyData = (DlyData)dlyDataMap.get(dayKeyNow + "_" + (i + 1));
-	// if (dlyData.getPoolElevationNum().doubleValue() > 0.2D) {
-	// cap = findCapability(dlyData.getPoolElevationNum().doubleValue(), i);
-	// }
-	// }
-	// else if (dlyData.getPoolElevationNum().doubleValue() > 0.2D)
-	// {
-	// cap = findCapability(dlyData.getPoolElevationNum().doubleValue(), i);
-	// }
-	// if (cap > 0.0D)
-	// {
-	// String[] outage = (String[])outages.get(dayKeyNow);
-	//
-	// fa = accumPercentAllUnitOut(Double.parseDouble(outage[i]), i);
-	// if (cap > 999.0D) {
-	// cap = 1.0D;
-	// }
-	// if (!capabilities.containsKey(dayKeyNow)) {
-	// capabilities.put(dayKeyNow, new ArrayList());
-	// }
-	// int capability = (int)(cap * (1.0D - fa) + 0.5D);
-	// if (capabilities.containsKey(dayKeyNow))
-	// {
-	// List<Integer> values = (List)capabilities.get(dayKeyNow);
-	// if (values.contains(Integer.valueOf(i))) {
-	// values.set(i, Integer.valueOf(capability));
-	// } else {
-	// values.add(i, Integer.valueOf(capability));
-	// }
-	// }
-	// }
-	// cap = -1.0D;i++;
-	// }
-	// setCapabilities(capabilities);
-	// }
-
 	private double findCapability(double elev, int dm) {
 		double ellow = 0.0D;
 		double elhigh = 0.0D;
@@ -2353,7 +2168,7 @@ public class ScheduleReschedule extends JDialog {
 				}
 				i++;
 			} catch (ArrayIndexOutOfBoundsException aioe) {
-				System.out.println("dm: " + dm + " Elev: " + elev);
+//				System.out.println("dm: " + dm + " Elev: " + elev);
 				aioe.printStackTrace();
 				break;
 			}
@@ -2369,9 +2184,6 @@ public class ScheduleReschedule extends JDialog {
 	private HashMap<Integer, ElevationCapability> readElevationCapabilityTable() {
 		HashMap<Integer, ElevationCapability> dataMap = null;
 		try {
-			// File outelcpFile = new
-			// File("V:\\Public\\RCC_Programs\\Schedule\\New
-			// Schedule\\OUTELCP");
 			File outelcpFile = null;
 			File outelcpFileMain = new File(Util.getDefaultProgramLocation() + File.separator + "OUTELCP");
 			File outelcpFileBak = new File(Util.getDefaultProgramLocationBak() + File.separator + "OUTELCP");
