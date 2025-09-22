@@ -1106,6 +1106,7 @@ public class ScheduleReschedule extends JDialog {
 	 *            - Calendar
 	 */
 	protected void compute(Calendar day) {
+		System.out.println("Compute water schedule for " + Util.getCalendarYYMMDD(day));
 		// compsch computes schedule for one dayKey
 		// float
 		// bendvol[2][9]={{1424.2,1476.3,1529.6,1584.2,1640,1696.9,1754.9,1814.1,1874.5},
@@ -1481,7 +1482,6 @@ public class ScheduleReschedule extends JDialog {
 
 						// data[rset][36+d4]=(data[rset][33+d3]>data[rset][36+d4])
 						// ? data[rset][33+d3] :data[rset][36+d4];
-
 						// bend power release
 						dlyDataMap.get(dayKeyNow + "_3").setRescheduleOP(
 								Double.toString(dlyDataMap.get(dayKeyNow + "_3").getRescheduleOpNum() - fb));
@@ -1518,6 +1518,7 @@ public class ScheduleReschedule extends JDialog {
 					}
 				}
 			} else {
+				System.out.println("Usual case compute oahe bend relationship, day: " + Util.getCalendarYYMMDD(day));
 				// Usual case compute oahe bend relationship
 				// bend discharge
 				fa = ((fc - fb * Double.valueOf(coefficient[2]))
@@ -1525,19 +1526,23 @@ public class ScheduleReschedule extends JDialog {
 				// fa=(fc-fb*data[rset][75])/(data[rset][75]+data[rset][76]);
 				if (fa >= 0) {
 					if (allPlantRescheduled) {
+						System.out.println("allPlantRescheduled: " + allPlantRescheduled);
 						// 36+18=54 34+18=52
 						dlyDataMap.get(dayKeyNow + "_3")
 								.setRescheduleOP(Float.toString((float) ((int) ((fa * 2) + .5)) / 2));
+						System.out.println("if allPlantRescheduled bend RescheduleOP: "+(dlyDataMap.get(dayKeyNow + "_3").getRescheduleOP()));
 						// data[rset][36+d4]=(float)((int)((fa*2)+.5))/2;
 						// bend ge
 						dlyDataMap.get(dayKeyNow + "_3").setRescheduleEnergy(
 								Integer.toString(60 * ((int) (((dlyDataMap.get(dayKeyNow + "_3").getRescheduleOpNum()
 										* Double.valueOf(coefficient[3]).doubleValue() / 60) + .5)))));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)+.5));
-//						System.out.println("bend new getRescheduleEnergy: " + dlyDataMap.get(dayKeyNow + "_3").getRescheduleEnergy());
+						System.out.println("allPlantRescheduledbend - new bend getRescheduleEnergy: " + dlyDataMap.get(dayKeyNow + "_3").getRescheduleEnergy());
 					} else {
+						System.out.println("allPlantRescheduled else");
 						// 36+0=36 34+0=34
 						dlyDataMap.get(dayKeyNow + "_3").setKcfs(Float.toString((float) ((int) ((fa * 2) + .5)) / 2));
+						System.out.println("else bend Kcfs: "+(dlyDataMap.get(dayKeyNow + "_3").getKcfs()));
 						// data[rset][36+d4]=(float)((int)((fa*2)+.5))/2;
 						// bend ge
 						
@@ -1545,22 +1550,27 @@ public class ScheduleReschedule extends JDialog {
 								Integer.toString(60 * ((int) (((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
 										* Double.valueOf(coefficient[3]).doubleValue() / 60) + .5)))));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)+.5));
-//						System.out.println("bend kcfsNum: "+(dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()));
+						System.out.println("else bend ActGenPower: "+(dlyDataMap.get(dayKeyNow + "_3").getActGenPower()));
 					}
 					if (allPlantRescheduled) {
+						System.out.println("if allPlantRescheduled2: " + allPlantRescheduled);
 						// 36+18=54 34+18=52
 						dlyDataMap.get(dayKeyNow + "_3").setKcfs(Float.toString((float) ((int) ((fa * 2) - .5)) / 2));
+						System.out.println("if bend Kcfs: "+(dlyDataMap.get(dayKeyNow + "_3").getKcfs()));
 						// data[rset][36+d4]=(float)((int)((fa*2)-.5))/2;
 						// bend ge  Changed to 60
 						dlyDataMap.get(dayKeyNow + "_3").setRescheduleEnergy(
 								Integer.toString(60 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getRescheduleOpNum()
 										* Double.valueOf(coefficient[3]).doubleValue() / 60) - .5))));
+						System.out.println("bend RescheduleEnergy: "+(dlyDataMap.get(dayKeyNow + "_3").getRescheduleEnergy()));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)-.5));
 					} else {
+						System.out.println("else allPlantRescheduled2: " + allPlantRescheduled);
 						// 36+0=36 34+0=34
 						// String val = Float.toString((float) ((int) ((fa * 2)
 						// - .5)) / 2);
 						dlyDataMap.get(dayKeyNow + "_3").setKcfs(Float.toString((float) ((int) ((fa * 2) - .5)) / 2));
+						System.out.println("else bend Kcfs: "+(dlyDataMap.get(dayKeyNow + "_3").getKcfs()));
 						// data[rset][36+d4]=(float)((int)((fa*2)-.5))/2;
 						// bend ge
 						// String val2 = Integer.toString(50 * ((int)
@@ -1571,32 +1581,36 @@ public class ScheduleReschedule extends JDialog {
 						dlyDataMap.get(dayKeyNow + "_3").setActGenPower(
 								Integer.toString(60 * ((int) ((dlyDataMap.get(dayKeyNow + "_3").getKcfsNum()
 										* Double.valueOf(coefficient[3]).doubleValue() / 60) - .5))));
+						System.out.println("else bend ActGenPower: "+(dlyDataMap.get(dayKeyNow + "_3").getActGenPower()));
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)-.5));
 						// /* bend ge */
 					}
 				}
 				if (allPlantRescheduled) {
+					System.out.println("if allPlantRescheduled3: " + allPlantRescheduled);
 					// Oahe discharge
 					// 33+18=51, 34+18=52
 					dlyDataMap.get(dayKeyNow + "_2")
 							.setRescheduleOP(Float.toString((float) ((int) (((fa + fb) * 2) + .5)) / 2));	
+					System.out.println("if allPlantRescheduled3 RescheduleOP: " + dlyDataMap.get(dayKeyNow + "_2").getRescheduleOP());
 					// data[rset][33+d3]=(float)((int)(((fa + fb)*2)+.5))/2; /*
 					// Oahe discharge */
 					// oahe ge
 					dlyDataMap.get(dayKeyNow + "_2").setRescheduleEnergy(
 							Double.toString(fc - dlyDataMap.get(dayKeyNow + "_3").getRescheduleEnergyNum()));
 					// data[rset][31+d3]=fc - data[rset][34+d4]; /* oahe ge */
-//					System.out.println("oahe new getRescheduleEnergy: " + dlyDataMap.get(dayKeyNow + "_2").getRescheduleEnergy());
+					System.out.println("allPlantRescheduled - oahe new getRescheduleEnergy: " + dlyDataMap.get(dayKeyNow + "_2").getRescheduleEnergy());
 				} else {
+					System.out.println("if allPlantRescheduled3 else ");
 					// Oahe discharge
-					dlyDataMap.get(dayKeyNow + "_2")
-							.setKcfs(Float.toString((float) ((int) (((fa + fb) * 2) + .5)) / 2));
+					dlyDataMap.get(dayKeyNow + "_2").setKcfs(Float.toString((float) ((int) (((fa + fb) * 2) + .5)) / 2));
+					System.out.println("if allPlantRescheduled3 else Oahe Kcfs: " + dlyDataMap.get(dayKeyNow + "_2").getKcfs());
 					// data[rset][33+d3]=(float)((int)(((fa + fb)*2)+.5))/2; /*
 					// Oahe discharge */
 					// oahe ge
-					dlyDataMap.get(dayKeyNow + "_2")
-							.setActGenPower(Double.toString(fc - dlyDataMap.get(dayKeyNow + "_3").getActGenPowerNum()));
+					dlyDataMap.get(dayKeyNow + "_2").setActGenPower(Double.toString(fc - dlyDataMap.get(dayKeyNow + "_3").getActGenPowerNum()));
 					// data[rset][31+d3]=fc - data[rset][34+d4]; /* oahe ge */
+					System.out.println("allPlantRescheduled3 else oahe ActGenPower: "+(dlyDataMap.get(dayKeyNow + "_2").getActGenPower()));
 				}
 			}
 		}
