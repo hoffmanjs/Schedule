@@ -2032,6 +2032,7 @@ public class ScheduleReschedule extends JDialog {
 	private void updateGapt24IdData(Calendar date) {
 		System.out.println("updateGapt24IdData " + date.getTime().toString());
 		JTable table = getSchedReschedTable();
+		System.out.println("row: " + getGeOPsRow() + " col: " + getColumnNine()	);
 		String val = (String) table.getValueAt(getGeOPsRow(), getColumnNine());
 		String currentDay = Util.getCalendarYYMMDD(date);
 		Calendar now = Util.getDate();
