@@ -2035,11 +2035,11 @@ public class ScheduleReschedule extends JDialog {
 		String val = (String) table.getValueAt(getGeOPsRow(), getColumnNine());
 		String currentDay = Util.getCalendarYYMMDD(date);
 		Calendar now = Util.getDate();
+		System.out.println("GAPT 24 ID data for " + currentDay + " to " + val);
 
 		ScheduleFileData sch = Util.getSchedFileData();
 		HashMap<String, String> gapt24IdData = sch.getId24Map();
 		if (((date.before(now)) || (date.equals(now))) && (val != null) && (val.length() > 0)) {
-			System.out.println("GAPT 24 ID data for " + currentDay + " to " + val);
 			gapt24IdData.put(currentDay, val);
 		}
 	}
