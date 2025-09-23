@@ -1552,8 +1552,9 @@ public class ScheduleReschedule extends JDialog {
 						// data[rset][34+d4]=50*((int)((data[rset][36+d4]*data[rset][76]/50)+.5));
 						System.out.println("else bend ActGenPower: "+(dlyDataMap.get(dayKeyNow + "_3").getActGenPower()));
 					}
+				} else { //Added this else to handle negative bend discharge
 					if (allPlantRescheduled) {
-						System.out.println("if allPlantRescheduled2: " + allPlantRescheduled);
+						System.out.println("else allPlantRescheduled2 negative bend discharge: " + allPlantRescheduled);
 						// 36+18=54 34+18=52
 						dlyDataMap.get(dayKeyNow + "_3").setKcfs(Float.toString((float) ((int) ((fa * 2) - .5)) / 2));
 						System.out.println("if bend Kcfs: "+(dlyDataMap.get(dayKeyNow + "_3").getKcfs()));
