@@ -552,7 +552,7 @@ public class WaterManagementUI extends JFrame {
 		createBriefSchFileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				createBriefSchFileButton_actionPerformed(e);
-				copyBriefFileFileButton_actionPerformed(e);
+				//copyBriefFileFileButton_actionPerformed(e);
 			}
 		});
 		// Bring up help on F1 key
